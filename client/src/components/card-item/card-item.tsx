@@ -10,12 +10,15 @@ import { Title } from "../primitives/title";
 import { Container } from "./styled/container";
 import { Content } from "./styled/content";
 import { Footer } from "./styled/footer";
+import eventEmmitter from "../../services/eventEmmiter";
 
 type Props = {
   card: Card;
   isDragging: boolean;
   provided: DraggableProvided;
 };
+
+const { onDeleteCard, onRenameCard, onChangeDescriptionCard, onCopyCard } = eventEmmitter();
 
 export const CardItem = ({ card, isDragging, provided }: Props) => {
   return (
@@ -31,16 +34,27 @@ export const CardItem = ({ card, isDragging, provided }: Props) => {
     >
       <Content>
         <Title
-          onChange={() => {}}
+          onChange={(name) => {
+            onRenameCard(card.id, name);
+          }}
           title={card.name}
           fontSize="large"
           bold={true}
         />
-        <Text text={card.description} onChange={() => {}} />
+        <Text
+          text={card.description}
+          onChange={(description) => {
+            onChangeDescriptionCard(card.id, description);
+          }}
+        />
         <Footer>
-          <DeleteButton onClick={() => {}} />
+          <DeleteButton
+            onClick={() => {
+              onDeleteCard(card.id);
+            }}
+          />
           <Splitter />
-          <CopyButton onClick={() => {}} />
+          <CopyButton onClick={() => {onCopyCard(card.id)}} />
         </Footer>
       </Content>
     </Container>
