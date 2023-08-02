@@ -1,9 +1,9 @@
-import type { Socket } from "socket.io";
+import type { Socket } from 'socket.io';
 
-import { CardEvent } from "../common/enums";
-import { Card } from "../data/models/card";
-import { SocketHandler } from "./socket.handler";
-import { eventHandlerConnector } from "../services/eventHandlerConnector";
+import { CardEvent } from '../common/enums';
+import { Card } from '../data/models/card';
+import { SocketHandler } from './socket.handler';
+import { eventHandlerConnector } from '../services/eventHandlerConnector';
 
 export class CardHandler extends SocketHandler {
   public handleConnection(socket: Socket): void {
@@ -22,12 +22,10 @@ export class CardHandler extends SocketHandler {
   }
 
   public createCard(listId: string, cardName: string): void {
-    const newCard = new Card(cardName, "");
+    const newCard = new Card(cardName, '');
     const lists = this.db.getData();
 
-    const updatedLists = lists.map((list) =>
-      list.id === listId ? list.setCards(list.cards.concat(newCard)) : list
-    );
+    const updatedLists = lists.map((list) => (list.id === listId ? list.setCards(list.cards.concat(newCard)) : list));
 
     this.db.setData(updatedLists);
     this.updateLists();
@@ -57,7 +55,6 @@ export class CardHandler extends SocketHandler {
   }
 
   private deleteCard(cardId: string): void {
-    console.log("Deleting card", cardId);
     const lists = this.db.getData();
     const updatedLists = lists.map((list) => {
       list.cards = list.cards.filter((c) => c.id !== cardId);
@@ -96,7 +93,6 @@ export class CardHandler extends SocketHandler {
   }
 
   private copyCard(cardId: string): void {
-    console.log("Copying card", cardId);
     const lists = this.db.getData();
     const updatedLists = lists.map((list) => {
       list.cards.forEach((c) => {

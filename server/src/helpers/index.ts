@@ -1,4 +1,4 @@
-import logger from "../services/errorBoundary.service";
+import logger from '../services/errorBoundary.service';
 // PATTERN: Proxy
 const ProxifyClassWithLogger = (className) => {
   return new Proxy(className, {

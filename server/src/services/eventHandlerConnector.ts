@@ -1,4 +1,4 @@
-import logger, { Level } from "./errorBoundary.service";
+import logger, { Level } from './errorBoundary.service';
 
 export function eventHandlerConnector({ handlers, socket, context }) {
   handlers.forEach(([event, handler]) => {

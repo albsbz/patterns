@@ -14,8 +14,7 @@ type Props = {
 };
 
 export const Title = ({ onChange, title, fontSize, bold, width }: Props) => {
-  const { ref, isComponentVisible, setIsComponentVisible } =
-    useComponentVisible(false);
+  const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
   const [value, setValue] = useState(title);
 
   useEffect(() => setValue(title), [title]);
@@ -39,10 +38,7 @@ export const Title = ({ onChange, title, fontSize, bold, width }: Props) => {
           width={width ?? 250}
         />
       ) : (
-        <BasicTitle
-          className="title-content"
-          onClick={() => setIsComponentVisible(true)}
-        >
+        <BasicTitle className="title-content" onClick={() => setIsComponentVisible(true)}>
           {value}
         </BasicTitle>
       )}

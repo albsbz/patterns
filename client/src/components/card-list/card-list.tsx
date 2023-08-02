@@ -1,7 +1,4 @@
-import type {
-  DroppableProvided,
-  DroppableStateSnapshot,
-} from '@hello-pangea/dnd';
+import type { DroppableProvided, DroppableStateSnapshot } from '@hello-pangea/dnd';
 import { Droppable } from '@hello-pangea/dnd';
 import { CSSProperties } from 'react';
 
@@ -20,10 +17,7 @@ type Props = {
 const CardsList = ({ listId, listType, style, cards }: Props) => {
   return (
     <Droppable droppableId={listId} type={listType}>
-      {(
-        dropProvided: DroppableProvided,
-        dropSnapshot: DroppableStateSnapshot,
-      ) => (
+      {(dropProvided: DroppableProvided, dropSnapshot: DroppableStateSnapshot) => (
         <ListWrapper
           style={style}
           isDraggingOver={dropSnapshot.isDraggingOver}

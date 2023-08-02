@@ -1,5 +1,5 @@
-import { CardEvent, ListEvent } from "../common/enums";
-import { Socket } from "socket.io-client";
+import { CardEvent, ListEvent } from '../common/enums';
+import { Socket } from 'socket.io-client';
 
 interface Emitter {
   [key: string]: (...args: any[]) => void;

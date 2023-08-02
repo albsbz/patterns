@@ -1,11 +1,11 @@
-import { promises as fs } from "fs";
-import { join } from "path";
+import { promises as fs } from 'fs';
+import { join } from 'path';
 
 // PATTERN: Observer
 export enum Level {
-  info = "info",
-  warning = "warning",
-  error = "error",
+  info = 'info',
+  warning = 'warning',
+  error = 'error',
 }
 
 interface ILoggerPayload {
@@ -48,12 +48,12 @@ class Logger {
 class FileLogger implements ILogger {
   createMessage(payload, level) {
     return `${new Date().toISOString()} - [${level}]: ${payload.message} - ${
-      payload.payload ? JSON.stringify(payload.payload, null, 4) : ""
+      payload.payload ? JSON.stringify(payload.payload, null, 4) : ''
     }\n\n`;
   }
   writeToFile(message) {
-    fs.writeFile(join(process.cwd(), "logs", "logs.txt"), message, {
-      flag: "a+",
+    fs.writeFile(join(process.cwd(), 'logs', 'logs.txt'), message, {
+      flag: 'a+',
     });
   }
   info(payload: ILoggerPayload) {
@@ -66,6 +66,7 @@ class FileLogger implements ILogger {
 
 class ConsoleLogger implements ILogger {
   error(payload: ILoggerPayload): void {
+    // eslint-disable-next-line no-console
     console.log(payload);
   }
 }

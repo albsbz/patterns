@@ -23,8 +23,7 @@ export class ReorderService {
     sourceListId: string;
     destinationListId: string;
   }): List[] {
-    const target: Card = lists.find((list) => list.id === sourceListId)
-      ?.cards?.[sourceIndex];
+    const target: Card = lists.find((list) => list.id === sourceListId)?.cards?.[sourceIndex];
 
     if (!target) {
       return lists;

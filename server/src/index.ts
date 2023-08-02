@@ -31,6 +31,7 @@ const onConnection = (socket: Socket): void => {
 
 io.on('connection', onConnection);
 
+// eslint-disable-next-line no-console
 httpServer.listen(PORT, () => console.log('listening on port: ' + PORT));
 
 export { httpServer };

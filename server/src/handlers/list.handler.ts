@@ -1,9 +1,9 @@
-import type { Socket } from "socket.io";
+import type { Socket } from 'socket.io';
 
-import { ListEvent } from "../common/enums";
-import { List } from "../data/models/list";
-import { SocketHandler } from "./socket.handler";
-import { eventHandlerConnector } from "../services/eventHandlerConnector";
+import { ListEvent } from '../common/enums';
+import { List } from '../data/models/list';
+import { SocketHandler } from './socket.handler';
+import { eventHandlerConnector } from '../services/eventHandlerConnector';
 
 export class ListHandler extends SocketHandler {
   public handleConnection(socket: Socket): void {
@@ -26,11 +26,7 @@ export class ListHandler extends SocketHandler {
 
   private reorderLists(sourceIndex: number, destinationIndex: number): void {
     const lists = this.db.getData();
-    const reorderedLists = this.reorderService.reorder(
-      lists,
-      sourceIndex,
-      destinationIndex
-    );
+    const reorderedLists = this.reorderService.reorder(lists, sourceIndex, destinationIndex);
     this.db.setData(reorderedLists);
     this.updateLists();
   }

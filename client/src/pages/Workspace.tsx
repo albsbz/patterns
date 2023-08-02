@@ -1,19 +1,15 @@
-import type {
-  DraggableLocation,
-  DroppableProvided,
-  DropResult,
-} from "@hello-pangea/dnd";
-import { DragDropContext, Droppable } from "@hello-pangea/dnd";
-import React, { useContext, useEffect, useState } from "react";
+import type { DraggableLocation, DroppableProvided, DropResult } from '@hello-pangea/dnd';
+import { DragDropContext, Droppable } from '@hello-pangea/dnd';
+import React, { useContext, useEffect, useState } from 'react';
 
-import { CardEvent, ListEvent } from "../common/enums";
-import type { List } from "../common/types";
-import { Column } from "../components/column/column";
-import { ColumnCreator } from "../components/column-creator/column-creator";
-import { SocketContext } from "../context/socket";
-import { reorderService } from "../services/reorder.service";
-import { Container } from "./styled/container";
-import eventEmmitter from "../services/eventEmmiter";
+import { CardEvent, ListEvent } from '../common/enums';
+import type { List } from '../common/types';
+import { Column } from '../components/column/column';
+import { ColumnCreator } from '../components/column-creator/column-creator';
+import { SocketContext } from '../context/socket';
+import { reorderService } from '../services/reorder.service';
+import { Container } from './styled/container';
+import eventEmmitter from '../services/eventEmmiter';
 
 export const Workspace = () => {
   const [lists, setLists] = useState<List[]>([]);
@@ -37,20 +33,16 @@ export const Workspace = () => {
     const source: DraggableLocation = result.source;
     const destination: DraggableLocation = result.destination;
 
-    const isNotMoved =
-      source.droppableId === destination.droppableId &&
-      source.index === destination?.index;
+    const isNotMoved = source.droppableId === destination.droppableId && source.index === destination?.index;
 
     if (isNotMoved) {
       return;
     }
 
-    const isReorderLists = result.type === "COLUMN";
+    const isReorderLists = result.type === 'COLUMN';
 
     if (isReorderLists) {
-      setLists(
-        reorderService.reorderLists(lists, source.index, destination.index)
-      );
+      setLists(reorderService.reorderLists(lists, source.index, destination.index));
       socket.emit(ListEvent.REORDER, source.index, destination.index);
 
       return;
@@ -65,19 +57,14 @@ export const Workspace = () => {
     });
   };
 
-  const { onCreateCard, onDeleteList, onRenameList, onCreateList } =
-    eventEmmitter(socket);
+  const { onCreateCard, onDeleteList, onRenameList, onCreateList } = eventEmmitter(socket);
 
   return (
     <React.Fragment>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="board" type="COLUMN" direction="horizontal">
           {(provided: DroppableProvided) => (
-            <Container
-              className="workspace-container"
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >
+            <Container className="workspace-container" ref={provided.innerRef} {...provided.droppableProps}>
               {lists.map((list: List, index: number) => (
                 <Column
                   key={list.id}

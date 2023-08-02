@@ -1,6 +1,6 @@
-import type { DraggableLocation } from "@hello-pangea/dnd";
+import type { DraggableLocation } from '@hello-pangea/dnd';
 
-import { Card, List } from "../common/types";
+import { Card, List } from '../common/types';
 
 export const reorderService = {
   getCards(lists: List[], source: DraggableLocation) {
@@ -17,11 +17,7 @@ export const reorderService = {
     return this.reorderItems<List>(items, startIndex, endIndex);
   },
 
-  reorderCards(
-    lists: List[],
-    source: DraggableLocation,
-    destination: DraggableLocation
-  ): List[] {
+  reorderCards(lists: List[], source: DraggableLocation, destination: DraggableLocation): List[] {
     const current: Card[] = this.getCards(lists, source);
     const next: Card[] = this.getCards(lists, destination);
     const target: Card = current[source.index];
@@ -29,15 +25,9 @@ export const reorderService = {
     const isMovingInSameList = source.droppableId === destination.droppableId;
 
     if (isMovingInSameList) {
-      const reordered: Card[] = this.reorderItems<Card>(
-        current,
-        source.index,
-        destination.index
-      );
+      const reordered: Card[] = this.reorderItems<Card>(current, source.index, destination.index);
 
-      return lists.map((list) =>
-        list.id === source.droppableId ? { ...list, cards: reordered } : list
-      );
+      return lists.map((list) => (list.id === source.droppableId ? { ...list, cards: reordered } : list));
     }
 
     const newLists = lists.map((list) => {
