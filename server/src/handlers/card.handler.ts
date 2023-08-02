@@ -3,18 +3,22 @@ import type { Socket } from "socket.io";
 import { CardEvent } from "../common/enums";
 import { Card } from "../data/models/card";
 import { SocketHandler } from "./socket.handler";
+import { eventHandlerConnector } from "../services/eventHandlerConnector";
 
 export class CardHandler extends SocketHandler {
   public handleConnection(socket: Socket): void {
-    socket.on(CardEvent.CREATE, this.createCard.bind(this));
-    socket.on(CardEvent.REORDER, this.reorderCards.bind(this));
-    socket.on(CardEvent.DELETE, this.deleteCard.bind(this));
-    socket.on(CardEvent.RENAME, this.renameCard.bind(this));
-    socket.on(
-      CardEvent.CHANGE_DESCRIPTION,
-      this.changeDescriptionCard.bind(this)
-    );
-    socket.on(CardEvent.COPY, this.copyCard.bind(this));
+    eventHandlerConnector({
+      handlers: [
+        [CardEvent.CREATE, this.createCard],
+        [CardEvent.DELETE, this.deleteCard],
+        [CardEvent.RENAME, this.renameCard],
+        [CardEvent.CHANGE_DESCRIPTION, this.changeDescriptionCard],
+        [CardEvent.COPY, this.copyCard],
+        [CardEvent.REORDER, this.reorderCards],
+      ],
+      socket: socket,
+      context: this,
+    });
   }
 
   public createCard(listId: string, cardName: string): void {
@@ -59,7 +63,6 @@ export class CardHandler extends SocketHandler {
       list.cards = list.cards.filter((c) => c.id !== cardId);
       return list;
     });
-
     this.db.setData(updatedLists);
     this.updateLists();
   }
@@ -97,7 +100,8 @@ export class CardHandler extends SocketHandler {
     const lists = this.db.getData();
     const updatedLists = lists.map((list) => {
       list.cards.forEach((c) => {
-        if (c.id === cardId) list.cards.push(new Card(c.name, c.description));
+        // PATTERN: Prototype
+        if (c.id === cardId) list.cards.push(c.clone());
       });
       return list;
     });

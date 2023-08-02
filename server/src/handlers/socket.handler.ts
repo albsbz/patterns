@@ -1,8 +1,9 @@
-import { Server, Socket } from 'socket.io';
+import { Server, Socket } from "socket.io";
 
-import { ListEvent } from '../common/enums';
-import { Database } from '../data/database';
-import { ReorderService } from '../services/reorder.service';
+import { ListEvent } from "../common/enums";
+import { Database } from "../data/database";
+import { ReorderService } from "../services/reorder.service";
+import ProxifyClassWithLogger from "../helpers";
 
 abstract class SocketHandler {
   protected db: Database;
@@ -14,7 +15,7 @@ abstract class SocketHandler {
   public constructor(io: Server, db: Database, reorderService: ReorderService) {
     this.io = io;
     this.db = db;
-    this.reorderService = reorderService;
+    this.reorderService = ProxifyClassWithLogger(reorderService);
   }
 
   public abstract handleConnection(socket: Socket): void;

@@ -1,4 +1,5 @@
-import { List } from './models/list';
+import logger from "../services/errorBoundary.service";
+import { List } from "./models/list";
 
 class Database {
   private static instance: Database | null = null;
@@ -18,6 +19,7 @@ class Database {
   }
 
   public setData(data: List[]): void {
+    logger.log({ message: "Database updated", payload: data });
     this.data = data;
   }
 
