@@ -6,6 +6,6 @@ pipelines:
         clone:
           enabled: false
         script:
-          - git clone --bare git@bitbucket.org:albsbz/patterns.git
+          - git clone --bare git@bitbucket.org:albsbz-hom/patterns.git
           - cd RepoName.git
           - git push --mirror git@github.com:albsbz/patterns.git
