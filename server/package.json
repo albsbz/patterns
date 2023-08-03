@@ -3,8 +3,9 @@
   "version": "0.0.0",
   "description": "Starter for Patterns Practises and Principles homework. Binary Studio Academy",
   "scripts": {
-    "start": "nodemon ./src/index.ts",
-    "build": "webpack"
+    "dev": "nodemon ./src/index.ts",
+    "build": "webpack",
+    "start": "node ./dist/bundle.js"
   },
   "author": "Vitalii Yarmus",
   "license": "MIT",
