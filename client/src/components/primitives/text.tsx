@@ -11,8 +11,7 @@ type Props = {
 };
 
 export const Text = ({ onChange, text }: Props) => {
-  const { ref, isComponentVisible, setIsComponentVisible } =
-    useComponentVisible(false);
+  const { ref, isComponentVisible, setIsComponentVisible } = useComponentVisible(false);
   const [value, setValue] = useState(text);
 
   useEffect(() => setValue(text), [text]);
@@ -33,10 +32,7 @@ export const Text = ({ onChange, text }: Props) => {
           autoFocus={isComponentVisible}
         />
       ) : (
-        <BasicText
-          className="text-content"
-          onClick={() => setIsComponentVisible(true)}
-        >
+        <BasicText className="text-content" onClick={() => setIsComponentVisible(true)}>
           {value}
         </BasicText>
       )}

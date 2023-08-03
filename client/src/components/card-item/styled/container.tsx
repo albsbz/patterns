@@ -10,12 +10,9 @@ type Props = {
 const Container = styled.a<Props>`
   border-radius: ${BORDER_RADIUS}px;
   border: 2px solid transparent;
-  border-color: ${({ isDragging }) =>
-    isDragging ? colors.N60A : 'transparent'};
-  background-color: ${({ isDragging }) =>
-    isDragging ? colors.Y50 : colors.N0};
-  box-shadow: ${(props) =>
-    props.isDragging ? `2px 2px 1px ${colors.N70}` : 'none'};
+  border-color: ${({ isDragging }) => (isDragging ? colors.N60A : 'transparent')};
+  background-color: ${({ isDragging }) => (isDragging ? colors.Y50 : colors.N0)};
+  box-shadow: ${(props) => (props.isDragging ? `2px 2px 1px ${colors.N70}` : 'none')};
   box-sizing: border-box;
   padding: ${GRID}px;
   min-height: 40px;

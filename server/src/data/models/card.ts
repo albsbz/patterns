@@ -15,6 +15,11 @@ class Card {
     this.createdAt = new Date();
     this.id = randomUUID();
   }
+
+  public clone() {
+    const newCard = { ...this, createdAt: new Date(), id: randomUUID() };
+    return newCard;
+  }
 }
 
 export { Card };

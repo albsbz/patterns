@@ -3,12 +3,23 @@ import type { Socket } from 'socket.io';
 import { ListEvent } from '../common/enums';
 import { List } from '../data/models/list';
 import { SocketHandler } from './socket.handler';
+import { eventHandlerConnector } from '../services/eventHandlerConnector';
 
 export class ListHandler extends SocketHandler {
   public handleConnection(socket: Socket): void {
-    socket.on(ListEvent.CREATE, this.createList.bind(this));
-    socket.on(ListEvent.GET, this.getLists.bind(this));
-    socket.on(ListEvent.REORDER, this.reorderLists.bind(this));
+    eventHandlerConnector({
+      handlers: [
+        [ListEvent.CREATE, this.createList],
+        [ListEvent.GET, this.getLists],
+        [ListEvent.REORDER, this.reorderLists],
+        [ListEvent.DELETE, this.deleteList],
+        [ListEvent.RENAME, this.renameList],
+        [ListEvent.UNDO, this.getPrevious],
+        [ListEvent.REDO, this.getNext],
+      ],
+      socket: socket,
+      context: this,
+    });
   }
 
   private getLists(callback: (cards: List[]) => void): void {
@@ -17,11 +28,7 @@ export class ListHandler extends SocketHandler {
 
   private reorderLists(sourceIndex: number, destinationIndex: number): void {
     const lists = this.db.getData();
-    const reorderedLists = this.reorderService.reorder(
-      lists,
-      sourceIndex,
-      destinationIndex,
-    );
+    const reorderedLists = this.reorderService.reorder(lists, sourceIndex, destinationIndex);
     this.db.setData(reorderedLists);
     this.updateLists();
   }
@@ -30,6 +37,33 @@ export class ListHandler extends SocketHandler {
     const lists = this.db.getData();
     const newList = new List(name);
     this.db.setData(lists.concat(newList));
+    this.updateLists();
+  }
+
+  private deleteList(id: string): void {
+    const lists = this.db.getData();
+    const updatedLists = lists.filter((list) => list.id !== id);
+    this.db.setData(updatedLists);
+    this.updateLists();
+  }
+
+  private renameList({ id, name }: { id: string; name: string }): void {
+    const lists = this.db.getData();
+    const updatedLists = lists.map((list) => {
+      if (list.id === id) list.name = name;
+      return list;
+    });
+    this.db.setData(updatedLists);
+    this.updateLists();
+  }
+
+  private getPrevious(): void {
+    this.db.getPrevious();
+    this.updateLists();
+  }
+
+  private getNext(): void {
+    this.db.getNext();
     this.updateLists();
   }
 }

@@ -3,49 +3,44 @@ import type { DraggableLocation } from '@hello-pangea/dnd';
 import { Card, List } from '../common/types';
 
 export const reorderService = {
-  reorderLists(items: List[], startIndex: number, endIndex: number): List[] {
+  getCards(lists: List[], source: DraggableLocation) {
+    return lists.find((list) => list.id === source.droppableId)?.cards || [];
+  },
+  // PATTERN: HOF
+  reorderItems<T>(items: T[], startIndex: number, endIndex: number) {
     const [removed] = items.splice(startIndex, 1);
     items.splice(endIndex, 0, removed);
-
     return items;
   },
 
-  reorderCards(
-    lists: List[],
-    source: DraggableLocation,
-    destination: DraggableLocation,
-  ): List[] {
-    const current: Card[] =
-      lists.find((list) => list.id === source.droppableId)?.cards || [];
-    const next: Card[] =
-      lists.find((list) => list.id === destination.droppableId)?.cards || [];
+  reorderLists(items: List[], startIndex: number, endIndex: number): List[] {
+    return this.reorderItems<List>(items, startIndex, endIndex);
+  },
+
+  reorderCards(lists: List[], source: DraggableLocation, destination: DraggableLocation): List[] {
+    const current: Card[] = this.getCards(lists, source);
+    const next: Card[] = this.getCards(lists, destination);
     const target: Card = current[source.index];
 
     const isMovingInSameList = source.droppableId === destination.droppableId;
 
     if (isMovingInSameList) {
-      const [removed] = current.splice(source.index, 1);
-      current.splice(destination.index, 0, removed);
-      const reordered: Card[] = current;
+      const reordered: Card[] = this.reorderItems<Card>(current, source.index, destination.index);
 
-      return lists.map((list) =>
-        list.id === source.droppableId ? { ...list, cards: reordered } : list,
-      );
+      return lists.map((list) => (list.id === source.droppableId ? { ...list, cards: reordered } : list));
     }
 
     const newLists = lists.map((list) => {
+      let updatedList = { ...list };
+
       if (list.id === source.droppableId) {
-        return {
-          ...list,
-          cards: this.removeCardFromList(current, source.index),
-        };
+        updatedList.cards = this.removeCardFromList(current, source.index);
+        return updatedList;
       }
 
       if (list.id === destination.droppableId) {
-        return {
-          ...list,
-          cards: this.addCardToList(next, destination.index, target),
-        };
+        updatedList.cards = this.addCardToList(next, destination.index, target);
+        return updatedList;
       }
 
       return list;

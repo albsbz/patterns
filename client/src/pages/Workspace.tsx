@@ -1,10 +1,6 @@
-import type {
-  DraggableLocation,
-  DroppableProvided,
-  DropResult,
-} from '@hello-pangea/dnd';
+import type { DraggableLocation, DroppableProvided, DropResult } from '@hello-pangea/dnd';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { KeyboardEvent, useContext, useEffect, useState } from 'react';
 
 import { CardEvent, ListEvent } from '../common/enums';
 import type { List } from '../common/types';
@@ -13,6 +9,7 @@ import { ColumnCreator } from '../components/column-creator/column-creator';
 import { SocketContext } from '../context/socket';
 import { reorderService } from '../services/reorder.service';
 import { Container } from './styled/container';
+import eventEmmitter from '../services/eventEmmiter';
 
 export const Workspace = () => {
   const [lists, setLists] = useState<List[]>([]);
@@ -36,9 +33,7 @@ export const Workspace = () => {
     const source: DraggableLocation = result.source;
     const destination: DraggableLocation = result.destination;
 
-    const isNotMoved =
-      source.droppableId === destination.droppableId &&
-      source.index === destination?.index;
+    const isNotMoved = source.droppableId === destination.droppableId && source.index === destination?.index;
 
     if (isNotMoved) {
       return;
@@ -47,9 +42,7 @@ export const Workspace = () => {
     const isReorderLists = result.type === 'COLUMN';
 
     if (isReorderLists) {
-      setLists(
-        reorderService.reorderLists(lists, source.index, destination.index),
-      );
+      setLists(reorderService.reorderLists(lists, source.index, destination.index));
       socket.emit(ListEvent.REORDER, source.index, destination.index);
 
       return;
@@ -64,6 +57,17 @@ export const Workspace = () => {
     });
   };
 
+  const { onCreateCard, onDeleteList, onRenameList, onCreateList, onUndo, onRedo } = eventEmmitter(socket);
+
+  const keyDownHandler = (event: KeyboardEvent): void => {
+    if (event.ctrlKey && event.key === 'z') {
+      return onUndo();
+    }
+    if (event.ctrlKey && event.key === 'y') {
+      return onRedo();
+    }
+  };
+
   return (
     <React.Fragment>
       <DragDropContext onDragEnd={onDragEnd}>
@@ -73,6 +77,8 @@ export const Workspace = () => {
               className="workspace-container"
               ref={provided.innerRef}
               {...provided.droppableProps}
+              onKeyDown={keyDownHandler}
+              tabIndex={0}
             >
               {lists.map((list: List, index: number) => (
                 <Column
@@ -81,10 +87,13 @@ export const Workspace = () => {
                   listName={list.name}
                   cards={list.cards}
                   listId={list.id}
+                  onDeleteList={onDeleteList}
+                  onRenameList={onRenameList}
+                  onCreateCard={onCreateCard}
                 />
               ))}
               {provided.placeholder}
-              <ColumnCreator onCreateList={() => {}} />
+              <ColumnCreator onCreateList={onCreateList} />
             </Container>
           )}
         </Droppable>

@@ -14,8 +14,7 @@ const Header = styled.div<Props>`
   justify-content: center;
   border-top-left-radius: ${BORDER_RADIUS}px;
   border-top-right-radius: ${BORDER_RADIUS}px;
-  background-color: ${({ isDragging }) =>
-    isDragging ? colors.G50 : colors.N30};
+  background-color: ${({ isDragging }) => (isDragging ? colors.G50 : colors.N30)};
   transition: background-color 0.2s ease;
   height: 85px;
 
