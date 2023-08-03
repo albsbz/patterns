@@ -7,8 +7,9 @@ import { CardHandler } from './handlers/card.handler';
 import { ListHandler } from './handlers/list.handler';
 import { ReorderService } from './services/reorder.service';
 import { SnapshotStorage } from './data/snapshotStorage';
+import 'dotenv/config';
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 const httpServer = createServer();
 const io = new Server(httpServer, {
