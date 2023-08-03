@@ -6,6 +6,7 @@ import { Database } from './data/database';
 import { CardHandler } from './handlers/card.handler';
 import { ListHandler } from './handlers/list.handler';
 import { ReorderService } from './services/reorder.service';
+import { SnapshotStorage } from './data/snapshotStorage';
 
 const PORT = 3001;
 
@@ -18,15 +19,17 @@ const io = new Server(httpServer, {
 });
 
 const db = Database.Instance;
+const snapshotStorage = new SnapshotStorage(db);
 const reorderService = new ReorderService();
 
 if (process.env.NODE_ENV !== 'production') {
-  db.setData(lists);
+  snapshotStorage.setData(lists);
+  snapshotStorage.prepare();
 }
 
 const onConnection = (socket: Socket): void => {
-  new ListHandler(io, db, reorderService).handleConnection(socket);
-  new CardHandler(io, db, reorderService).handleConnection(socket);
+  new ListHandler(io, snapshotStorage, reorderService).handleConnection(socket);
+  new CardHandler(io, snapshotStorage, reorderService).handleConnection(socket);
 };
 
 io.on('connection', onConnection);

@@ -43,6 +43,14 @@ const eventEmmitter = (socket?: Socket) => {
       onCopyCard: (cardId: string) => {
         socketInstance.emit(CardEvent.COPY, cardId);
       },
+
+      onUndo: (cardId: string) => {
+        socketInstance.emit(ListEvent.UNDO);
+      },
+
+      onRedo: (cardId: string) => {
+        socketInstance.emit(ListEvent.REDO);
+      },
     };
   }
   return instance;

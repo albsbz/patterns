@@ -14,6 +14,8 @@ export class ListHandler extends SocketHandler {
         [ListEvent.REORDER, this.reorderLists],
         [ListEvent.DELETE, this.deleteList],
         [ListEvent.RENAME, this.renameList],
+        [ListEvent.UNDO, this.getPrevious],
+        [ListEvent.REDO, this.getNext],
       ],
       socket: socket,
       context: this,
@@ -52,6 +54,16 @@ export class ListHandler extends SocketHandler {
       return list;
     });
     this.db.setData(updatedLists);
+    this.updateLists();
+  }
+
+  private getPrevious(): void {
+    this.db.getPrevious();
+    this.updateLists();
+  }
+
+  private getNext(): void {
+    this.db.getNext();
     this.updateLists();
   }
 }

@@ -5,6 +5,8 @@ enum ListEvent {
   CREATE = 'list:create',
   RENAME = 'list:rename',
   DELETE = 'list:delete',
+  UNDO = 'list:undo',
+  REDO = 'list:redo',
 }
 
 export { ListEvent };

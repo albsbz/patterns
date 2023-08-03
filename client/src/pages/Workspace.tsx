@@ -1,6 +1,6 @@
 import type { DraggableLocation, DroppableProvided, DropResult } from '@hello-pangea/dnd';
 import { DragDropContext, Droppable } from '@hello-pangea/dnd';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { KeyboardEvent, useContext, useEffect, useState } from 'react';
 
 import { CardEvent, ListEvent } from '../common/enums';
 import type { List } from '../common/types';
@@ -57,14 +57,29 @@ export const Workspace = () => {
     });
   };
 
-  const { onCreateCard, onDeleteList, onRenameList, onCreateList } = eventEmmitter(socket);
+  const { onCreateCard, onDeleteList, onRenameList, onCreateList, onUndo, onRedo } = eventEmmitter(socket);
+
+  const keyDownHandler = (event: KeyboardEvent): void => {
+    if (event.ctrlKey && event.key === 'z') {
+      return onUndo();
+    }
+    if (event.ctrlKey && event.key === 'y') {
+      return onRedo();
+    }
+  };
 
   return (
     <React.Fragment>
       <DragDropContext onDragEnd={onDragEnd}>
         <Droppable droppableId="board" type="COLUMN" direction="horizontal">
           {(provided: DroppableProvided) => (
-            <Container className="workspace-container" ref={provided.innerRef} {...provided.droppableProps}>
+            <Container
+              className="workspace-container"
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              onKeyDown={keyDownHandler}
+              tabIndex={0}
+            >
               {lists.map((list: List, index: number) => (
                 <Column
                   key={list.id}
